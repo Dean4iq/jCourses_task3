@@ -50,6 +50,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Method to validate user data
+     * @param regularExpression regular expression to validate user input
+     * @param scanner Scanner class object to collect user input
+     * @param askingMessage array of messages to make contact with user
+     * @return returns user input checked by regular expression
+     */
     private String checkData(String regularExpression, Scanner scanner,
                              String... askingMessage) {
         String userInput = "";
