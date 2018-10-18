@@ -1,30 +1,34 @@
 package ua.testing.view;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  *
  */
 public class View {
-    public static final String GREETING_MSG = "Hello there!";
-    public static final String WARN_MSG = "Please follow the procedure";
-    public static final String FST_NAME_INP_MSG = "Input person's first name";
-    public static final String LAST_NAME_INP_MSG = "Input person's last name";
-    public static final String NICKNAME_INP_MSG = "Input person's nickname";
-    public static final String NICKNAME_WARN_MSG =
-            "Should contain 6-18 characters (letters numbers . _)!";
-    public static final String COMMENT_INP_MSG = "Input your comment";
-    public static final String PHONE_INP_MSG = "Input person's phone number";
-    public static final String EMAIL_INP_MSG = "Input person's email";
-    public static final String DATE_INP_MSG = "Input some date";
-    public static final String GROUP_INP_MSG = "Input contact group from list";
+    private static String LOCAL_BUNDLE_NAME = "messages";
 
-    public static final String DONE_MSG = "DONE!";
-    public static final String SUCCESS_MSG = "String added!";
-    public static final String FAIL_MSG = "Wrong input! Try again";
+    private static final ResourceBundle resourceBundle =
+            ResourceBundle.getBundle(LOCAL_BUNDLE_NAME,
+                                    new Locale("ua"));
 
+    public static String getBundleMsg(String str){
+        return resourceBundle.getString(str);
+    }
+
+    /**
+     *
+     * @param msg message to output
+     */
     public void printMessage(String msg) {
         System.out.println(msg);
     }
 
+    /**
+     *
+     * @param msg array of messages to output
+     */
     public void printConstructedMessage(String... msg) {
         StringBuilder stringBuilder = new StringBuilder();
 

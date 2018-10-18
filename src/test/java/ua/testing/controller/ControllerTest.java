@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
+import static ua.testing.view.TextConstant.*;
 
 public class ControllerTest {
     private static View view;
@@ -76,28 +77,30 @@ public class ControllerTest {
         Scanner scanner = new Scanner(System.in);
 
         String firstName = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
-                scanner, View.FST_NAME_INP_MSG);
+                scanner, View.getBundleMsg(FST_NAME_INP_MSG));
         String lastName = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
-                scanner, View.LAST_NAME_INP_MSG);
+                scanner, View.getBundleMsg(LAST_NAME_INP_MSG));
         String nickname = checkData(RegularExpressions.NICKNAME_REGULAR_EXPRESSION,
-                scanner, View.NICKNAME_INP_MSG, View.NICKNAME_WARN_MSG);
+                scanner, View.getBundleMsg(NICKNAME_INP_MSG),
+                View.getBundleMsg(NICKNAME_WARN_MSG));
         String phoneNumber = checkData(RegularExpressions.PHONE_REGULAR_EXPRESSION,
-                scanner, View.PHONE_INP_MSG);
+                scanner, View.getBundleMsg(PHONE_INP_MSG));
         String email = checkData(RegularExpressions.EMAIL_REGULAR_EXPRESSION,
-                scanner, View.EMAIL_INP_MSG);
+                scanner, View.getBundleMsg(EMAIL_INP_MSG));
         String comment = checkData(RegularExpressions.COMMENT_REGULAR_EXPRESSION,
-                scanner, View.COMMENT_INP_MSG);
+                scanner, View.getBundleMsg(COMMENT_INP_MSG));
         String date = checkData(RegularExpressions.DATE_REGULAR_EXPRESSION,
-                scanner, View.DATE_INP_MSG);
+                scanner, View.getBundleMsg(DATE_INP_MSG));
         String group = checkData(RegularExpressions.GROUP_REGULAR_EXPRESSION,
-                scanner, View.GROUP_INP_MSG, Arrays.toString(Group.values()));
+                scanner, View.getBundleMsg(GROUP_INP_MSG),
+                Arrays.toString(Group.values()));
 
         recordBook.putNewRecord(firstName, lastName, nickname, comment,
                 phoneNumber, email, date);
         recordBook.addGroupToRecord(Group.valueOf(group),
                 recordBook.getRecords().getLast());
 
-        view.printMessage(View.DONE_MSG);
+        view.printMessage(View.getBundleMsg(DONE_MSG));
 
         for (Record record : recordBook.getRecords()) {
             view.printMessage(record.toString());
@@ -122,18 +125,18 @@ public class ControllerTest {
             userInput = scanner.next();
 
             if (!userInput.matches(regularExpression)) {
-                view.printMessage(View.FAIL_MSG);
+                view.printMessage(View.getBundleMsg(FAIL_MSG));
             }
         }
 
-        view.printMessage(View.SUCCESS_MSG);
+        view.printMessage(View.getBundleMsg(SUCCESS_MSG));
 
         return userInput;
     }
 
     public void processUser() {
-        view.printMessage(View.GREETING_MSG);
-        view.printMessage(View.WARN_MSG);
+        view.printMessage(View.getBundleMsg(GREETING_MSG));
+        view.printMessage(View.getBundleMsg(WARN_MSG));
 
         startToCollectData();
     }
