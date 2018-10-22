@@ -84,20 +84,24 @@ public class ControllerTest {
 
     private void startToCollectData() {
         Scanner scanner = new Scanner(System.in);
-        String login = "";
+        String login;
 
         String firstName = checkData(NAME_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(View.resourceBundle,FST_NAME_INP_MSG));
+                scanner, View.getBundleMsg(View.resourceBundle, FST_NAME_INP_MSG));
         String lastName = checkData(LASTNAME_REGULAR_EXPRESSION,
                 scanner, View.getBundleMsg(View.resourceBundle, LAST_NAME_INP_MSG));
 
-        try {
-            login = checkData(LOGIN_REGULAR_EXPRESSION,
-                    scanner, View.getBundleMsg(View.resourceBundle, NICKNAME_INP_MSG),
-                    View.getBundleMsg(View.resourceBundle, NICKNAME_WARN_MSG));
-            RecordBook.checkLogin(login);
-        } catch (IllegalLoginException ex){
-            System.err.println(ex.toString());
+        while (true) {
+            try {
+                String userLoginInput = checkData(LOGIN_REGULAR_EXPRESSION,
+                        scanner, View.getBundleMsg(View.resourceBundle, NICKNAME_INP_MSG),
+                        View.getBundleMsg(View.resourceBundle, NICKNAME_WARN_MSG));
+                login = RecordBook.checkLogin(userLoginInput);
+
+                break;
+            } catch (IllegalLoginException ex) {
+                System.err.println(ex.toString());
+            }
         }
 
         String phoneNumber = checkData(PHONE_REGULAR_EXPRESSION,
