@@ -3,7 +3,7 @@ package ua.testing.model;
 public class Record {
     private String firstName;
     private String lastName;
-    private String nickname;
+    private String login;
     private String comment;
     private String phoneNumber;
     private String email;
@@ -15,7 +15,7 @@ public class Record {
                   String date) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nickname = nickname;
+        this.login = nickname;
         this.comment = comment;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -26,6 +26,38 @@ public class Record {
         this.group = group;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -34,7 +66,7 @@ public class Record {
         stringBuilder.append("Group: ").append(group).append("\n");
         stringBuilder.append("First name: ").append(firstName).append("\n");
         stringBuilder.append("Last name: ").append(lastName).append("\n");
-        stringBuilder.append("Nickname: ").append(nickname).append("\n");
+        stringBuilder.append("Nickname: ").append(login).append("\n");
         stringBuilder.append("Phone number: ").append(phoneNumber).
                                                 append("\n");
         stringBuilder.append("Email: ").append(email).append("\n");

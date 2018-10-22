@@ -3,6 +3,7 @@ package ua.testing.controller;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ua.testing.model.Group;
+import ua.testing.model.IllegalLoginException;
 import ua.testing.model.Record;
 import ua.testing.model.RecordBook;
 import ua.testing.service.RegularExpressions;
@@ -10,14 +11,22 @@ import ua.testing.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import static org.junit.Assert.*;
+import static ua.testing.service.RegularExpressions.*;
+import static ua.testing.service.RegularExpressions.GROUP_REGULAR_EXPRESSION;
 import static ua.testing.view.TextConstant.*;
 
 public class ControllerTest {
     private static View view;
     private static RecordBook recordBook;
+
+    private static final ResourceBundle resourceBundle =
+            ResourceBundle.getBundle("regex_localisation",
+                    new Locale(View.LOCALISATION));
 
     @BeforeClass
     public static void initializeVariables(){
@@ -28,7 +37,7 @@ public class ControllerTest {
     @Test
     public void checkFirstName() {
         System.setIn(new ByteArrayInputStream("John".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(NAME_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertEquals("John", response);
     }
@@ -36,7 +45,7 @@ public class ControllerTest {
     @Test
     public void checkLastName() {
         System.setIn(new ByteArrayInputStream("Connor".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(LASTNAME_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertEquals("Connor", response);
     }
@@ -44,7 +53,7 @@ public class ControllerTest {
     @Test
     public void checkNickname() {
         System.setIn(new ByteArrayInputStream("Wa_hg11a".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(RegularExpressions.LOGIN_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertEquals("Wa_hg11a", response);
     }
@@ -52,7 +61,7 @@ public class ControllerTest {
     @Test
     public void checkPhoneNumber() {
         System.setIn(new ByteArrayInputStream("123456789012".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(RegularExpressions.PHONE_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertEquals("123456789012", response);
     }
@@ -60,7 +69,7 @@ public class ControllerTest {
     @Test
     public void checkEmail() {
         System.setIn(new ByteArrayInputStream("john23@hotmail.com".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(RegularExpressions.EMAIL_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertEquals("john23@hotmail.com", response);
     }
@@ -68,39 +77,47 @@ public class ControllerTest {
     @Test
     public void checkComment() {
         System.setIn(new ByteArrayInputStream("ajgf,563.43".getBytes()));
-        String response = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
+        String response = checkData(RegularExpressions.COMMENT_REGULAR_EXPRESSION,
                 new Scanner(System.in));
         assertNotNull(response);
     }
 
     private void startToCollectData() {
         Scanner scanner = new Scanner(System.in);
+        String login = "";
 
-        String firstName = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(FST_NAME_INP_MSG));
-        String lastName = checkData(RegularExpressions.NAMES_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(LAST_NAME_INP_MSG));
-        String nickname = checkData(RegularExpressions.NICKNAME_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(NICKNAME_INP_MSG),
-                View.getBundleMsg(NICKNAME_WARN_MSG));
-        String phoneNumber = checkData(RegularExpressions.PHONE_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(PHONE_INP_MSG));
-        String email = checkData(RegularExpressions.EMAIL_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(EMAIL_INP_MSG));
-        String comment = checkData(RegularExpressions.COMMENT_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(COMMENT_INP_MSG));
-        String date = checkData(RegularExpressions.DATE_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(DATE_INP_MSG));
-        String group = checkData(RegularExpressions.GROUP_REGULAR_EXPRESSION,
-                scanner, View.getBundleMsg(GROUP_INP_MSG),
+        String firstName = checkData(NAME_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle,FST_NAME_INP_MSG));
+        String lastName = checkData(LASTNAME_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, LAST_NAME_INP_MSG));
+
+        try {
+            login = checkData(LOGIN_REGULAR_EXPRESSION,
+                    scanner, View.getBundleMsg(View.resourceBundle, NICKNAME_INP_MSG),
+                    View.getBundleMsg(View.resourceBundle, NICKNAME_WARN_MSG));
+            RecordBook.checkLogin(login);
+        } catch (IllegalLoginException ex){
+            System.err.println(ex.toString());
+        }
+
+        String phoneNumber = checkData(PHONE_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, PHONE_INP_MSG));
+        String email = checkData(EMAIL_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, EMAIL_INP_MSG));
+        String comment = checkData(COMMENT_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, COMMENT_INP_MSG));
+        String date = checkData(DATE_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, DATE_INP_MSG));
+        String group = checkData(GROUP_REGULAR_EXPRESSION,
+                scanner, View.getBundleMsg(View.resourceBundle, GROUP_INP_MSG),
                 Arrays.toString(Group.values()));
 
-        recordBook.putNewRecord(firstName, lastName, nickname, comment,
+        recordBook.putNewRecord(firstName, lastName, login, comment,
                 phoneNumber, email, date);
         recordBook.addGroupToRecord(Group.valueOf(group),
                 recordBook.getRecords().getLast());
 
-        view.printMessage(View.getBundleMsg(DONE_MSG));
+        view.printMessage(View.getBundleMsg(View.resourceBundle, DONE_MSG));
 
         for (Record record : recordBook.getRecords()) {
             view.printMessage(record.toString());
@@ -119,24 +136,24 @@ public class ControllerTest {
                              String... askingMessage) {
         String userInput = "";
 
-        while (!userInput.matches(regularExpression)) {
+        while (!userInput.matches(resourceBundle.getString(regularExpression))) {
             view.printConstructedMessage(askingMessage);
 
             userInput = scanner.next();
 
             if (!userInput.matches(regularExpression)) {
-                view.printMessage(View.getBundleMsg(FAIL_MSG));
+                view.printMessage(View.getBundleMsg(View.resourceBundle, FAIL_MSG));
             }
         }
 
-        view.printMessage(View.getBundleMsg(SUCCESS_MSG));
+        view.printMessage(View.getBundleMsg(View.resourceBundle, SUCCESS_MSG));
 
         return userInput;
     }
 
     public void processUser() {
-        view.printMessage(View.getBundleMsg(GREETING_MSG));
-        view.printMessage(View.getBundleMsg(WARN_MSG));
+        view.printMessage(View.getBundleMsg(View.resourceBundle, GREETING_MSG));
+        view.printMessage(View.getBundleMsg(View.resourceBundle, WARN_MSG));
 
         startToCollectData();
     }

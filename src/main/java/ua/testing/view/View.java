@@ -8,13 +8,14 @@ import java.util.ResourceBundle;
  */
 public class View {
     private static String LOCAL_BUNDLE_NAME = "messages";
+    public static final String LOCALISATION = "ua";
 
-    private static final ResourceBundle resourceBundle =
+    public static final ResourceBundle resourceBundle =
             ResourceBundle.getBundle(LOCAL_BUNDLE_NAME,
-                                    new Locale("ua"));
+                                    new Locale(LOCALISATION));
 
-    public static String getBundleMsg(String str){
-        return resourceBundle.getString(str);
+    public static String getBundleMsg(ResourceBundle resBundle , String str) {
+        return resBundle.getString(str);
     }
 
     /**
